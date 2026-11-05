@@ -1,0 +1,53 @@
+﻿# === Secrets and credentials ===
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# === Virtual environments ===
+.venv/
+venv/
+env/
+ENV/
+
+# === Test / coverage ===
+.pytest_cache/
+.coverage
+htmlcov/
+*.junit.xml
+
+# === Caches and indexes ===
+artifacts/
+.cache/
+*.npz
+*.npy
+
+# === Uploads (private user documents) ===
+data/uploads/
+data/private/
+
+# === Logs ===
+*.log
+logs/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "description": "ResearchLens AI — offline retrieval evaluation",
+    "date": "2026-11-03",
+    "python": "3.12.2",
+    "retrieval": "TF-IDF + RRF (sentence-transformers not loaded in offline eval)",
+    "corpus_description": "12 synthetic abstract-only papers covering RAG, LLM hallucination, and NLP evaluation",
+    "notes": "Live IBM Granite generation UNVERIFIED — IBM credentials not supplied. Offline retrieval metrics only."
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "answerable",
+      "question": "What is Retrieval-Augmented Generation (RAG)?",
+      "expected_relevant_paper_keywords": [
+        "retrieval-augmented",
+        "RAG",
+        "generation"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q2",
+      "type": "answerable",
+      "question": "How do large language models hallucinate facts?",
+      "expected_relevant_paper_keywords": [
+        "hallucination",
+        "factual",
+        "language model"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q3",
+      "type": "answerable",
+      "question": "What evaluation metrics are used for question answering?",
+      "expected_relevant_paper_keywords": [
+        "evaluation",
+        "metrics",
+        "question answering",
+        "F1",
+        "BLEU"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q4",
+      "type": "answerable",
+      "question": "What are the limitations of TF-IDF for semantic search?",
+      "expected_relevant_paper_keywords": [
+        "TF-IDF",
+        "semantic",
+        "retrieval",
+        "dense"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q5",
+      "type": "answerable",
+      "question": "How does BERT represent text semantically?",
+      "expected_relevant_paper_keywords": [
+        "BERT",
+        "transformer",
+        "embedding",
+        "pretraining"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q6",
+      "type": "answerable",
+      "question": "What methods reduce hallucination in LLM outputs?",
+      "expected_relevant_paper_keywords": [
+        "hallucination",
+        "grounding",
+        "retrieval",
+        "factual"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q7",
+      "type": "answerable",
+      "question": "How is reciprocal rank fusion used in hybrid retrieval?",
+      "expected_relevant_paper_keywords": [
+        "reciprocal rank fusion",
+        "hybrid",
+        "retrieval",
+        "RRF"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q8",
+      "type": "answerable",
+      "question": "What is the role of attention mechanisms in transformers?",
+      "expected_relevant_paper_keywords": [
+        "attention",
+        "transformer",
+        "self-attention",
+        "mechanism"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q9",
+      "type": "unanswerable",
+      "question": "What is the exact revenue of OpenAI in 2025?",
+      "expected_relevant_paper_keywords": [],
+      "relevance_judgment": "manual",
+      "expected_behavior": "System should return no or low-confidence results; model should abstain or warn."
+    },
+    {
+      "id": "q10",
+      "type": "unanswerable",
+      "question": "Who won the 2026 FIFA World Cup?",
+      "expected_relevant_paper_keywords": [],
+      "relevance_judgment": "manual",
+      "expected_behavior": "System should return no relevant results from a research corpus."
+    },
+    {
+      "id": "q11",
+      "type": "comparison",
+      "question": "Compare TF-IDF and dense retrieval methods for scientific question answering.",
+      "expected_relevant_paper_keywords": [
+        "TF-IDF",
+        "dense",
+        "retrieval",
+        "comparison"
+      ],
+      "relevance_judgment": "manual"
+    },
+    {
+      "id": "q12",
+      "type": "comparison",
+      "question": "What are the differences between extractive and abstractive summarization?",
+      "expected_relevant_paper_keywords": [
+        "extractive",
+        "abstractive",
+        "summarization"
+      ],
+      "relevance_judgment": "manual"
+    }
+  ],
+  "offline_retrieval_results": {
+    "method": "TF-IDF only (sentence-transformers not installed in offline eval)",
+    "corpus_size_papers": 10,
+    "corpus_size_chunks": 10,
+    "status": "COMPLETE",
+    "hit_at_5_tfidf": 1.0,
+    "hit_at_5_hybrid": null,
+    "mrr_at_5_tfidf": 1.0,
+    "notes": "Evaluated on 8 answerable questions; corpus: 10 synthetic abstract-only papers. Hybrid (dense) retrieval not evaluated — sentence-transformers not installed. Live generation: UNVERIFIED."
+  },
+  "performance": {
+    "cold_start_seconds": null,
+    "warm_retrieval_ms": null,
+    "peak_memory_mb": null,
+    "platform": "win32",
+    "python": "3.12.2",
+    "notes": "Performance measurement pending live run with populated corpus."
+  },
+  "live_generation": {
+    "status": "UNVERIFIED",
+    "reason": "IBM watsonx.ai credentials not supplied. ALLOW_LIVE_GENERATION=false.",
+    "model_id_used": null,
+    "tokens_reported": null
+  }
+}

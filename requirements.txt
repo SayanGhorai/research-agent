@@ -1,0 +1,21 @@
+# ResearchLens AI — Runtime Dependencies
+# Target Python: 3.12
+# IBM Granite via watsonx.ai
+
+streamlit>=1.40.0,<2.0
+pydantic>=2.7.0,<3.0
+python-dotenv>=1.0.0,<2.0
+requests>=2.31.0,<3.0
+feedparser>=6.0.0,<7.0
+pypdf>=4.0.0,<7.0
+fonttools>=4.50,<5.0
+numpy>=1.26.0,<3.0
+scikit-learn>=1.4.0,<2.0
+ibm-watsonx-ai>=1.8.1,<1.9
+
+# Optional semantic retrieval:
+# sentence-transformers is not a default dependency.
+# TF-IDF retrieval remains available without MiniLM.
+
+# Development-only: pytest
+# Not required for production deployment.

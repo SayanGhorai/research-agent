@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    name: Offline tests (Python 3.12)
+    runs-on: ubuntu-latest
+
+    env:
+      # Ensure no real API calls are made in CI
+      ALLOW_LIVE_GENERATION: "false"
+      IBM_WATSONX_API_KEY: ""
+      IBM_WATSONX_PROJECT_ID: ""
+      IBM_WATSONX_URL: ""
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install runtime dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install development dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run offline test suite
+        run: python -m pytest tests/ -v --tb=short
+
+      - name: Verify app syntax
+        run: python -c "import ast; ast.parse(open('app.py', encoding='utf-8').read()); print('app.py syntax OK')"
+
+      - name: Verify package imports
+        run: |
+          python -c "
+          from researchlens.config import get_settings
+          from researchlens.schemas import PaperRecord, RunResult, TaskType
+          from researchlens.exports import (
+              papers_to_bibtex, papers_to_csv, papers_to_json,
+              run_result_to_markdown, evidence_ledger_to_markdown,
+              comparison_to_markdown, run_trace_to_markdown,
+          )
+          from researchlens.ingestion import ingest_pdf
+          from researchlens.retrieval import CorpusIndex
+          from researchlens.workflow import ResearchWorkflow
+          print('All imports OK')
+          "
