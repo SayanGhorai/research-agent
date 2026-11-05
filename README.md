@@ -1,192 +1,187 @@
-# ResearchLens AI
+ResearchLens AI
+An evidence-grounded research assistant powered by IBM Granite and watsonx.ai.
 
-**Evidence-Grounded Research Agent** — IBM Granite-powered literature search, paper summarization, multi-paper comparison, citation management, and hypothesis generation.
+ResearchLens AI helps students and researchers find literature, read uploaded papers, organize references, and prepare research drafts. It combines document-scoped retrieval with IBM Granite generation and displays the supporting passages, PDF page references, and validation warnings alongside the output.
 
----
+Developed by Sayan Ghorai, VIT Bhopal University, for the IBM SkillsBuild / AICTE internship through Edunet Foundation.
 
-## Status
+Selected problem statement: No. 1 — Research Agent
+Domain: Education, academic research, and scientific literature assistance
 
-| Phase | Name | Status |
-|---|---|---|
-| 0 | Inspect and lock the plan | ✅ Complete |
-| 1 | Bootstrap safely | ✅ Complete |
-| 2 | Search, ingest, organize | ✅ Complete |
-| 3 | Hybrid retrieval and evidence | ✅ Complete |
-| 4 | Connect IBM Granite | ✅ Complete (offline SDK; **live smoke test UNVERIFIED** — IBM credentials required) |
-| 5 | Complete all original functions | ✅ Complete |
-| 6 | Controlled differentiation | ✅ Complete (evidence ledger, comparison, run trace) |
-| 7 | Streamlit experience and safety | ✅ Complete |
-| 8 | Tests and honest evaluation | ✅ Complete (182 tests pass; offline retrieval evaluated) |
-| 9 | GitHub and Streamlit release | 🔲 Pending owner authorization |
-| 10 | Submission evidence | 🔲 Pending |
+GitHub Repository · Hosted Application · [Project Presentation](ResearchLens_AI_Sayan_Ghorai_Project_Presentation.pptx) · [Problem Statement](yourproblemstatement.pdf)
+Research prototype: Generated answers and references may contain mistakes. Citation checks do not establish scientific truth. Review the original sources before using an output in academic work. Local Granite generation has been demonstrated; hosted AI generation requires separate private credential configuration and was not confirmed in the recorded deployment checks.
 
-See [`PROJECT_STATUS.md`](PROJECT_STATUS.md) for the full phase log.
+Project overview
+Research work involves repeated literature searches, reading, note-taking, comparison, and reference management. Important details can be missed, and a result from a cited study can be mistaken for the current paper's own finding.
 
----
+ResearchLens AI provides one workspace for these activities. Users can upload research PDFs or discover papers through arXiv and Crossref, select the sources relevant to their question, and request an answer or research draft. The application retrieves selected passages rather than asking the language model to answer without source material.
 
-## Original scope — all nine requirements
+The project supports different research topics. Plant-disease research papers were used as demonstration documents; the application itself is not a plant-disease classifier.
+Verified project status
+Submission snapshot: 5 November 2026. These statuses reflect the recorded local tests and deployment evidence, not a guarantee of current external-service availability.
+Area Recorded status
+Python and Streamlit application Implemented and run locally
+PDF ingestion, selected-paper retrieval, and reference exports Tested with real research PDFs
+IBM Granite through watsonx.ai Live local generation demonstrated
+Questions, comparisons, extraction, summaries, and reports Reviewed live; outputs included partial validation and known errors
+Hypotheses and section drafting Implemented and tested with mocked responses; live quality review not completed
+Existing regression suite 224 tests passed in the recorded local run
+Additional UI helper checks 24 separate offline checks passed
+GitHub source and submission artifacts Pushed to main
+Streamlit Community Cloud Hosted interface deployed; cloud Granite generation not independently confirmed
 
-| # | Requirement | Status |
-|---|---|---|
-| 1 | Literature search (arXiv + Crossref, real records) | ✅ Implemented |
-| 2 | Summarize papers (structured, evidence-linked, coverage-labeled) | ✅ Implemented |
-| 3 | Organize references and citations (deduplicated, metadata-based export) | ✅ Implemented |
-| 4 | Understand questions and retrieve information | ✅ Implemented |
-| 5 | Extract data (objective, method, dataset, findings, metrics, limitations) | ✅ Implemented |
-| 6 | Generate reports (research brief, search log, synthesis, references) | ✅ Implemented |
-| 7 | Suggest hypotheses (labeled untested, rationale, experiment, outcome) | ✅ Implemented |
-| 8 | Draft paper sections (background/related-work, citation-grounded) | ✅ Implemented |
-| 9 | Use IBM technology (live Granite via watsonx.ai) | ⚠️ **UNVERIFIED** — IBM credentials required |
+The initial source commit was b48c64d. Submission files were added in commit 47cf8cb.
+Research capabilities
+Capability What the application provides
+Literature discovery arXiv and Crossref search, metadata retrieval, and duplicate handling
+Research-question answering Answers based on passages from the selected sources
+Paper summarization Organized summaries of objectives, methods, samples, findings, metrics, and limitations
+Structured extraction Six research fields with separate draft and review-status handling
+Paper comparison Side-by-side comparison of two or three selected papers
+Research reports Draft briefs with supporting evidence and references
+Hypothesis generation Suggestions intended to be labelled untested, with rationale and proposed evaluation
+Research-section drafting Draft text grounded in available evidence, with unsupported details left for review
+Reference management Editable bibliographic metadata and JSON, CSV, and BibTeX exports
 
----
+These are implemented routes, not claims that every generated answer is complete or correct. In particular, live tests found citation mismatches, omitted information, unsupported interpretations, and occasional incorrect reference details.
+Architecture and agent roles
+Sources → PDF extraction / metadata ingestion → page-aware passages → scoped retrieval → IBM Granite draft → deterministic checks → review and export
 
-## Features
+The application uses four bounded Python roles rather than four separate language models:
+Role Responsibility
+Search Agent Builds a literature-search query and calls the scholarly-source adapters
+Read / Extract Agent Assembles relevant evidence from eligible papers and prepares extraction information
+Write Agent Sends the bounded evidence and task instructions to IBM Granite
+Verify Agent Checks source identifiers, citation scope, numerical consistency, and selected output requirements
 
-- Natural-language research question input with explicit **Run** button
-- arXiv + Crossref literature search (live, deduplicated)
-- PDF upload with page-indexed text extraction and size/safety validation
-- TF-IDF + sentence-transformer hybrid retrieval (CPU-only, lazy-loaded)
-- Reciprocal-rank fusion (RRF, k=60) combining lexical and semantic signals
-- Evidence-grounded answers, summaries, structured extraction
-- Multi-paper side-by-side comparison with tentative gap/disagreement flags
-- **Evidence ledger** — per-claim source linkage with validation state
-- **Run trace** — per-run audit trail (model, calls, tokens, warnings)
-- Research report, hypothesis, and paper-section generation via IBM Granite
-- Session library with BibTeX / CSV / JSON export
-- Four agent roles: Search · Read/Extract · Verify · Write
-- Session-isolated corpus (no persistent disk; clear session removes all state)
-- Live generation disabled by default — explicit gate required
+The workflow is user-triggered. It does not run an open-ended agent conversation or repeatedly regenerate answers until they appear correct. The demonstrated configuration permits one model request per action and does not add an automatic answer-repair call.
+Retrieval configuration
+The tested demonstration uses TF-IDF lexical retrieval. Evidence selection is restricted to the chosen paper IDs, and retrieved passages retain their document identity and PDF page location.
 
----
+Optional MiniLM semantic retrieval and reciprocal-rank fusion are supported in the code, but semantic retrieval is disabled in the demonstrated configuration. sentence-transformers is not a default runtime dependency. Installing it, loading the embedding model, and validating semantic retrieval would be a separate step.
 
-## Quick start (local)
+ENABLE_SEMANTIC_SEARCH=false does not disable Granite. It controls evidence retrieval; ALLOW_LIVE_GENERATION separately controls model generation.
+Technology stack
+Component Implementation
+Application Python 3.12 and Streamlit
+Language model ibm/granite-4-h-small through IBM watsonx.ai
+IBM integration ibm-watsonx-ai Python SDK
+PDF extraction pypdf with fonttools support
+Lexical retrieval scikit-learn and NumPy
+Typed records Pydantic
+Scholarly-source adapters Requests and feedparser
+Private configuration Environment variables, Streamlit Secrets, and python-dotenv
+Development and delivery IBM Bob assistance, local testing, Git, GitHub, and Streamlit Community Cloud
 
-```bash
-# 1. Clone and enter the project
-git clone https://github.com/<owner>/research-agent.git
+IBM Bob assisted development and troubleshooting. IBM Granite is the application's runtime LLM. Subsequent implementation checks and testing were performed on the Python project.
+Interface and exports
+The interface has five tabs: Research Workspace, Paper Library, Compare & Extract, Reports & References, and About & Diagnostics.
+
+Users can choose a task, restrict evidence to selected papers, inspect source passages, edit bibliography details, and download research artifacts. Available exports include library JSON/CSV/BibTeX, draft Markdown, an evidence ledger, a run trace, and structured-extraction CSV outputs.
+
+The updated interface displays generated content before detailed validation warnings. Blocked attempts are distinguished from previous saved results. In structured extraction, generated values that do not pass the checks remain available as Needs review rather than being silently treated as information absent from the paper. A review worksheet preserves draft values separately from accepted fields.
+Run locally
+Use Python 3.12. On Windows, the following commands create a project-specific environment and install the runtime dependencies:
+git clone https://github.com/SayanGhorai/research-agent.git
 cd research-agent
-
-# 2. Create and activate virtual environment
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+Copy .env.example to a private .env file and configure it using the exact variable names below. For preview use, leave live generation disabled. For authorized generation, supply the IBM settings from your own working watsonx.ai project and enable the generation flag.
 
-# 3. Install dependencies
-pip install -r requirements.txt
+Start the application:
+.\.venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1
+On macOS or Linux, use the corresponding virtual-environment Python executable. No local Granite model weights or GPU are required for the demonstrated TF-IDF and hosted-generation setup.
+Configuration
+The application resolves explicit environment variables first, followed by Streamlit Secrets, local .env values, and defaults. Restart the application after configuration changes so cached settings and workflow objects are recreated.
+Variable Purpose / demonstrated setting
+WATSONX_API_KEY Private IBM API key
+WATSONX_PROJECT_ID Project associated with the IBM service
+WATSONX_URL Regional endpoint; the local demo used https://us-south.ml.cloud.ibm.com
+WATSONX_MODEL_ID ibm/granite-4-h-small for the recorded demonstration
+ALLOW_LIVE_GENERATION false for preview; true for explicitly enabled generation
+ENABLE_SEMANTIC_SEARCH false for the tested lightweight configuration
+APP_ENV local on the developer's computer; production for the hosted application
+APP_ACCESS_PASSWORD Private application access password; required by the production live-generation guard
+MAX_LLM_CALLS_PER_ACTION Set to 1 for the controlled demonstration
+MAX_OUTPUT_TOKENS Set to 1000 for the final local demonstration
+CROSSREF_MAILTO Optional contact for Crossref requests
 
-# 4. Configure credentials (optional — app runs without them in preview mode)
-cp .env.example .env
-# Edit .env — add your watsonx.ai API key, project ID, URL, and model ID
+Use WATSONX*API_KEY, not IBM_WATSONX_API_KEY; the same naming distinction applies to the other WATSONX* settings.
 
-# 5. Run the app
-python -m streamlit run app.py
-```
+A configured status means required values are present. It does not prove successful IBM authentication, model availability, or remaining inference allowance.
+Usage and access safeguards
+The demonstrated upload limits are 3 PDFs per session, 10 MB per PDF, and 40 pages per PDF. Source scope and page references remain attached to the retrieved text.
 
-**Test command (verified):**
-```bash
-python -m pytest -q
-```
+The UI records model attempts and applies a five-call browser-session guard. Clearing the library does not reset this counter. It is not an account-wide token budget, billing limit, or persistent global rate limit; another browser session can have a separate counter.
 
-**Launch command (verified):**
-```bash
-python -m streamlit run app.py
-```
+MAX_OUTPUT_TOKENS limits response length, not input tokens or overall account consumption. PDF parsing and TF-IDF retrieval do not require Granite inference. Online literature discovery uses the relevant providers, while generated answers, comparisons, and reports use IBM inference when enabled.
 
----
+Keep .env, .streamlit/secrets.toml, access passwords, and uploaded private documents out of Git. Session data is not a durable research archive: export results before closing or restarting. Clearing local session content does not erase provider-side records or account usage.
+Testing and evaluation
+The recorded local verification completed 224 regression tests. A separate set of 24 offline UI helper checks covered warning placement, stale-result handling, extraction review states, upload-limit configuration, and preservation of the session call guard.
 
-## Environment variables
+The regression suite covers configuration, schemas, PDF ingestion, duplicate uploads, retrieval, document scope, workflow behaviour, the IBM client, evidence checks, and exports. Additional offline scenarios replayed observed answer-quality problems and exercised the seven generation routes using mocked model responses.
 
-See [`.env.example`](.env.example) for the full list. Key variables:
+To install development dependencies and run the existing suite:
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest -q
+The recorded offline runs used controlled test settings and no live inference. A previously inherited one-call setting affected a test expecting the default three-call budget; use isolated test settings when reproducing results rather than changing application code to satisfy that mismatch.
 
-| Variable | Purpose |
-|---|---|
-| `IBM_WATSONX_API_KEY` | IBM watsonx.ai API key (owner-supplied; never commit) |
-| `IBM_WATSONX_PROJECT_ID` | watsonx.ai project ID |
-| `IBM_WATSONX_URL` | Regional URL (e.g. `https://us-south.ml.cloud.ibm.com`) |
-| `IBM_WATSONX_MODEL_ID` | Exact model ID from the accessible catalog |
-| `ALLOW_LIVE_GENERATION` | Set `true` only after a successful smoke test |
+Passing software tests does not establish research-answer accuracy. The separate UI checks are not automatically included in the 224-test count. A GitHub Actions workflow is provided in [`.github/workflows/ci.yml`](.github/workflows/ci.yml); inspect the repository's Actions results for hosted CI status.
+Retrieval evaluation
+[`eval/run_eval.py`](eval/run_eval.py) provides an offline evaluation path using an illustrative corpus. Manual relevance labels and keyword-proxy scores are treated separately. Historical values in [`eval/results.json`](eval/results.json) should not be presented as a general research benchmark or proof of model accuracy.
 
-Never commit a populated `.env` or `secrets.toml`.
+The recorded evaluation does not establish semantic-retrieval performance, reliable model abstention, or scientific correctness across arbitrary PDFs.
+Measured token demonstration
+A local paper-summary demonstration was accompanied by screenshots of the IBM project's cumulative resource usage:
+Measurement Tokens
+Before 46,074
+After 48,550
+Observed increase 2,476
 
----
+These are project-dashboard readings, not remaining quota. The difference is the observed increase during the demonstration interval; reporting delays or other activity can affect attribution. The screenshots are included in the presentation.
+Deployment
+The hosted interface was deployed from this repository's main branch with app.py as the entry point and Python 3.12. Streamlit Cloud configuration is separate from the developer's local .env file.
 
-## Architecture
+Enter private credentials through the hosting platform's Secrets settings, not the public repository. For live generation, the application requires complete IBM configuration, ALLOW_LIVE_GENERATION=true, and satisfaction of its access controls. Production live generation is blocked without a configured application password.
 
-| Component | Choice |
-|---|---|
-| Main app | Python 3.12 + Streamlit |
-| Model | Hosted IBM Granite via watsonx.ai (`ibm-watsonx-ai` SDK) |
-| Keyword retrieval | TF-IDF (scikit-learn) |
-| Semantic retrieval | sentence-transformers/all-MiniLM-L6-v2 (CPU, lazy-loaded) |
-| Fusion | Reciprocal-rank fusion (RRF, k=60) |
-| Agent roles | Search · Read/Extract · Verify · Write |
-| Session corpus | Up to 1,500 chunks; 3 PDFs, 40 pages each |
-| LLM budget | 3 calls per action; 5 per session |
-| Langflow companion | Planned — see Phase 10 |
+The last recorded cloud check established that the interface loads. The successful live Granite demonstrations documented here ran locally. Do not assume that the hosted link has working generation solely because the homepage is available. Localhost-only launch flags are for local testing, not cloud configuration.
+Repository and submission files
+File / directory Purpose
+app.py Streamlit interface, session management, and user actions
+researchlens/ Configuration, source adapters, ingestion, retrieval, agents, workflows, schemas, and exports
+tests/ Automated regression tests
+eval/ Offline retrieval evaluation code and stored results
+requirements.txt Runtime dependencies
+requirements-dev.txt Development and test dependencies
+.github/workflows/ci.yml Automated test workflow
+yourproblemstatement.pdf Project-specific Research Agent problem statement
+ResearchLens_AI_Sayan_Ghorai_Project_Presentation.pptx Submission presentation and demonstration evidence
+app.json Descriptive project-information manifest
+THIRD_PARTY_NOTICES.md Dependency and third-party acknowledgements
 
----
+app.json is documentation, not executable application code or an imported visual-workflow export. The application runs from app.py and does not depend on the manifest for execution.
 
-## Tests and evaluation
+[`PROJECT_STATUS.md`](PROJECT_STATUS.md) contains the earlier development log. Some phase entries and test counts may predate the submission snapshot in this README.
+Known limitations
 
-- **182 tests, 0 failures** (offline, no live API keys in CI)
-- Test coverage: config/secrets, ingestion, retrieval, grounding, workflow, exports (including Phase 6)
-- Offline retrieval evaluation: Hit@5 = 1.000, MRR@5 = 1.000 (10-paper synthetic corpus, TF-IDF only)
-- Evaluation results: [`eval/results.json`](eval/results.json)
-- Live IBM Granite generation: **UNVERIFIED** — IBM credentials not supplied
+- Grounding and completeness: A generated draft can omit requested facts, attach the wrong passage citation, mix a paper's own findings with related work, or claim that available information is missing.
+- Numerical interpretation: Decimal-to-percentage conversions, derived values, and training/testing distinctions can produce warnings or require manual review. A warning does not always mean the reported number is false.
+- Document coverage: Scanned pages, tables, images, and inconsistent source text may not be fully represented by text extraction. A full-text label does not mean every detail reached the model.
+- References: Uploaded filenames may initially serve as titles. Authors, year, DOI, and generated bibliography entries require checking; metadata is not guaranteed to be extracted correctly.
+- Comparisons and deployment: Different datasets and evaluation protocols do not justify direct performance rankings. Per-session safeguards are not enterprise access controls or account-wide spending limits.
+  The validation states valid, partial, invalid, and unchecked describe the implemented checks. Even valid does not mean scientifically verified. Hypotheses remain proposals, and generated sections remain drafts.
+  Future scope
+  Future work includes better per-claim citation alignment, table and bibliography extraction, broader multi-domain evaluation, optional semantic retrieval assessment, and persistent usage controls. Further live evaluation of hypotheses and section drafting is also needed.
 
-See [`eval/run_eval.py`](eval/run_eval.py) to re-run the offline evaluation.
+These are improvement opportunities, not features claimed as complete in the current submission.
+Author and acknowledgements
+Sayan Ghorai — VIT Bhopal University
 
----
+Developed as part of the IBM SkillsBuild / AICTE internship through Edunet Foundation, with IBM Bob development assistance and IBM Granite generation through watsonx.ai.
 
-## CI
+Demonstration research papers belong to their respective authors and publishers. Their reported model accuracies are findings from those papers, not accuracy scores for ResearchLens AI.
+License and third-party notices
+A project-specific license has not yet been selected. Do not assume an open-source license from the repository's public visibility alone. Third-party components and research documents remain subject to their respective terms.
 
-GitHub Actions workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
-Runs on push/PR to `main`. Uses Python 3.12. No live API keys in CI. Mocks all providers.
-
----
-
-## Deployment (Streamlit Community Cloud)
-
-1. Push to GitHub (after owner approves public publication).
-2. Create a new app pointing to `app.py`, Python 3.12, branch `main`.
-3. Add credentials in **App settings → Secrets** using valid TOML (see [`.streamlit/secrets.example.toml`](.streamlit/secrets.example.toml)).
-4. Set `ALLOW_LIVE_GENERATION = "true"` in secrets only after a live smoke test.
-
-> Note: Session state is in-memory only. Uploaded documents are not persisted to disk between restarts.
-
----
-
-## Limitations
-
-- Abstract-only sources are labelled; detailed synthesis requires uploaded full text.
-- Hypotheses and research gap suggestions are explicitly untested.
-- Embeddings evaluated on a small session corpus only — not a scientific benchmark.
-- IBM Granite access requires the owner's watsonx.ai entitlement (see above).
-- Session state is not persisted across restarts — export results before closing.
-- Comparison disagreements and gaps are tentative — not confirmed literature findings.
-- Live deployment: community Cloud resource limits may require reduced chunk caps.
-- Langflow companion: planned, not yet implemented.
-
----
-
-## Data and model notices
-
-- arXiv search uses the public Atom feed API (no account required; rate-limited).
-- Crossref search uses the public REST API (no account required; rate-limited).
-- sentence-transformers model `all-MiniLM-L6-v2`: Apache 2.0 license; downloaded on first semantic search.
-- IBM Granite model: accessed via watsonx.ai SDK; no local weights; owner's account required.
-- No user data is stored persistently; session content is cleared on restart or explicit Clear Session.
-
----
-
-## License
-
-*To be selected by the owner.*
-
----
-
-## Third-party notices
-
-See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for dependency attributions.
+See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for acknowledgements.
