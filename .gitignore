@@ -51,3 +51,14 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+
+# Local-only development materials
+.bob/
+.bobignore
+data/
+research-agent-targeted-fix/
+research-agent-targeted-fix.zip
+ResearchLens_AI_IBM_Bob_Handoff_v1_1.md
+Research_Agent_Upload_Audit_2026-11-03.md
+smoke_test_live.py
+verify_workflow.py

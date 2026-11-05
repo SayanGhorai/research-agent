@@ -1,0 +1,160 @@
+{
+  "manifest_format": "researchlens.project-metadata",
+  "manifest_version": "1.0",
+  "purpose": "Documentation-only manifest for the ResearchLens AI Python project.",
+  "important_note": "This is a custom descriptive JSON manifest, not executable source, not a platform-generated flow export, and not a deployment configuration. The existing application does not read this file. app.py remains the application entry point. This manifest does not establish acceptance of an externally required workflow-export format.",
+  "project": {
+    "name": "ResearchLens AI",
+    "subtitle": "Evidence-grounded research assistant with IBM Granite",
+    "problem_statement_number": 1,
+    "problem_statement_title": "Research Agent",
+    "program": "IBM SkillsBuild University Engagement / AICTE 2026",
+    "domain": "Education, academic and scientific research",
+    "submitted_by": {
+      "name": "Sayan Ghorai",
+      "university": "VIT Bhopal University"
+    },
+    "submission_date": "2026-11-05",
+    "repository": "https://github.com/SayanGhorai/research-agent",
+    "initial_commit": "b48c64d",
+    "branch": "main",
+    "stage": "Internship prototype; not production-ready or independently scientifically validated"
+  },
+  "application": {
+    "language": "Python",
+    "python_version": "3.12",
+    "interface": "Streamlit",
+    "entry_point": "app.py",
+    "run_command": "python -m streamlit run app.py",
+    "dependency_file": "requirements.txt",
+    "orchestration": "Custom bounded Python workflow",
+    "model_provider": "IBM watsonx.ai",
+    "model_id": "ibm/granite-4-h-small",
+    "additional_generation_models": [],
+    "retrieval": {
+      "demonstrated_mode": "Document-scoped TF-IDF",
+      "libraries": [
+        "scikit-learn",
+        "NumPy"
+      ],
+      "optional_semantic_retrieval": "MiniLM support exists; disabled in the demonstrated configuration"
+    },
+    "pdf_processing": [
+      "pypdf",
+      "fontTools"
+    ],
+    "development_assistance": "IBM Bob-assisted initial development and troubleshooting; subsequent local completion and verification"
+  },
+  "workflow": {
+    "execution": "Explicit user action; bounded evidence; no automatic answer-repair loop",
+    "steps": [
+      "Select a task and permitted source documents",
+      "Extract and index PDF passages with page references",
+      "Retrieve evidence within the selected paper scope",
+      "Generate a draft using IBM Granite when enabled",
+      "Check evidence identifiers and numeric/context consistency",
+      "Display review status and export drafts or references"
+    ],
+    "roles": [
+      {
+        "name": "SearchAgent",
+        "module": "researchlens/agents.py",
+        "function": "Deterministic query planning and arXiv/Crossref discovery"
+      },
+      {
+        "name": "ReadAgent",
+        "module": "researchlens/agents.py",
+        "function": "Source-scoped evidence assembly"
+      },
+      {
+        "name": "WriteAgent",
+        "module": "researchlens/agents.py",
+        "function": "Bounded Granite synthesis"
+      },
+      {
+        "name": "VerifyAgent",
+        "module": "researchlens/agents.py",
+        "function": "Deterministic citation and consistency checks; not scientific proof"
+      }
+    ],
+    "coordinator": "researchlens/workflow.py"
+  },
+  "features": [
+    {
+      "task": "answer_question",
+      "live_review": "Reviewed; partial scientific/citation quality"
+    },
+    {
+      "task": "summarize",
+      "live_review": "Reviewed; partial scientific/citation quality"
+    },
+    {
+      "task": "extract",
+      "live_review": "Reviewed; draft and checked values are distinguished"
+    },
+    {
+      "task": "compare",
+      "live_review": "Reviewed; missing citations and unsupported comparisons observed"
+    },
+    {
+      "task": "report",
+      "live_review": "Reviewed; citation and bibliography limitations observed"
+    },
+    {
+      "task": "hypotheses",
+      "live_review": "Mock integration tested; live quality review not completed"
+    },
+    {
+      "task": "draft_section",
+      "live_review": "Mock integration tested; live quality review not completed"
+    }
+  ],
+  "documented_controls": {
+    "note": "Informational snapshot only; settings are controlled by code and private environment configuration, not this manifest.",
+    "max_pdfs_per_session": 3,
+    "max_upload_mb": 10,
+    "max_pages_per_pdf": 40,
+    "ui_model_calls_per_browser_session": 5,
+    "controlled_demo_max_calls_per_action": 1,
+    "final_local_demo_max_output_tokens": 1000,
+    "limitations": "The session counter is not a persistent account-wide token or spending cap.",
+    "private_configuration": "Use a private local .env or Streamlit Secrets. No API keys or passwords are included here."
+  },
+  "outputs": [
+    "Markdown drafts",
+    "Page-linked evidence ledger",
+    "Run trace",
+    "Structured CSV review worksheet",
+    "Library JSON",
+    "Library CSV",
+    "BibTeX"
+  ],
+  "verification_record": {
+    "basis": "User-supplied local verification logs and screenshots; these counts are not answer-accuracy scores.",
+    "regression_tests_passed": 224,
+    "offline_ui_helper_checks_passed": 24,
+    "local_granite_generation": "Demonstrated",
+    "hosted_interface": "Deployed to Streamlit Community Cloud",
+    "hosted_granite_generation": "Not confirmed in the supplied record",
+    "observed_token_dashboard": {
+      "before": 46074,
+      "after": 48550,
+      "increase": 2476,
+      "meaning": "Observed cumulative project-usage increase, not remaining quota or independently reconciled per-request billing"
+    }
+  },
+  "known_limitations": [
+    "Some generated scientific claims, citations and references can be incorrect",
+    "Retrieval is limited to selected passages, not a guarantee of reading every table or page",
+    "Missing or ambiguous bibliographic metadata requires manual review",
+    "Scanned or complex PDF content can be incompletely extracted",
+    "Cross-study metrics cannot automatically be ranked",
+    "Human review of source papers is required"
+  ],
+  "submission_files": {
+    "application_source": "app.py",
+    "problem_statement": "yourproblemstatement.pdf",
+    "presentation": "ResearchLens_AI_Sayan_Ghorai_Project_Presentation.pptx",
+    "project_metadata": "app.json"
+  }
+}
